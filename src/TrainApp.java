@@ -1,7 +1,8 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+// Custom Bogie class to hold properties
 class Bogie {
     private String name;
     private int capacity;
@@ -23,29 +24,34 @@ class Bogie {
 
 public class TrainApp {
     public static void main(String[] args) {
+        // 1. Initializing the original collection
         List<Bogie> bogieList = new ArrayList<>();
         bogieList.add(new Bogie("Sleeper", 72));
         bogieList.add(new Bogie("AC Chair", 56));
         bogieList.add(new Bogie("First Class", 24));
         bogieList.add(new Bogie("General", 90));
 
-        System.out.println("UC7 - Sort Bogies by Capacity (Comparator)");
+        // Display Header
+        System.out.println("=========================================");
+        System.out.println(" UC8 - Filter Passenger Bogies Using Streams ");
+        System.out.println("=========================================");
         System.out.println();
 
-        System.out.println("Before Sorting:");
-        for (Bogie b : bogieList) {
-            System.out.println(b);
-        }
+        // 2. Display all bogies before filtering
+        System.out.println("All Bogies:");
+        bogieList.forEach(System.out::println);
         System.out.println();
 
-        bogieList.sort(Comparator.comparingInt(Bogie::getCapacity));
+        // 3. Applying Stream API logic to filter based on capacity > 60
+        List<Bogie> filteredBogies = bogieList.stream()
+                .filter(b -> b.getCapacity() > 60)
+                .collect(Collectors.toList());
 
-        System.out.println("After Sorting by Capacity:");
-        for (Bogie b : bogieList) {
-            System.out.println(b);
-        }
+        // 4. Display the filtered results
+        System.out.println("Filtered Bogies (Capacity > 60):");
+        filteredBogies.forEach(System.out::println);
 
         System.out.println();
-        System.out.println("UC7 sorting completed...");
+        System.out.println("UC8 filtering completed...");
     }
 }
