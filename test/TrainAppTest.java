@@ -1,50 +1,53 @@
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import java.util.Arrays;
 
 public class TrainAppTest {
 
     @Test
-    void testSort_BasicSorting() {
-        // Tests: Array {72, 56, 24, 70, 60} becomes {24, 56, 60, 70, 72}
-        int[] input = {72, 56, 24, 70, 60};
-        int[] expected = {24, 56, 60, 70, 72};
-        TrainApp.bubbleSortByCapacity(input);
+    void testSort_BasicAlphabeticalSorting() {
+        // Tests: {"Sleeper","AC Chair","First Class","General","Luxury"}
+        // becomes {"AC Chair","First Class","General","Luxury","Sleeper"}
+        String[] input = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        String[] expected = {"AC Chair", "First Class", "General", "Luxury", "Sleeper"};
+        TrainApp.sortBogieNames(input);
+        assertArrayEquals(expected, input);
+    }
+
+    @Test
+    void testSort_UnsortedInput() {
+        // Tests: Rearranging random order into alphabetical
+        String[] input = {"Luxury", "General", "Sleeper", "AC Chair"};
+        String[] expected = {"AC Chair", "General", "Luxury", "Sleeper"};
+        TrainApp.sortBogieNames(input);
         assertArrayEquals(expected, input);
     }
 
     @Test
     void testSort_AlreadySortedArray() {
-        // Tests: {24, 56, 60, 70, 72} remains unchanged
-        int[] input = {24, 56, 60, 70, 72};
-        int[] expected = {24, 56, 60, 70, 72};
-        TrainApp.bubbleSortByCapacity(input);
+        // Tests: No change for already sorted data
+        String[] input = {"AC Chair", "First Class", "General"};
+        String[] expected = {"AC Chair", "First Class", "General"};
+        TrainApp.sortBogieNames(input);
         assertArrayEquals(expected, input);
     }
 
     @Test
-    void testSort_DuplicateValues() {
-        // Tests: {72, 56, 56, 24} becomes {24, 56, 56, 72}
-        int[] input = {72, 56, 56, 24};
-        int[] expected = {24, 56, 56, 72};
-        TrainApp.bubbleSortByCapacity(input);
+    void testSort_DuplicateBogieNames() {
+        // Tests: {"Sleeper","AC Chair","Sleeper","General"}
+        // becomes {"AC Chair","General","Sleeper","Sleeper"}
+        String[] input = {"Sleeper", "AC Chair", "Sleeper", "General"};
+        String[] expected = {"AC Chair", "General", "Sleeper", "Sleeper"};
+        TrainApp.sortBogieNames(input);
         assertArrayEquals(expected, input);
     }
 
     @Test
     void testSort_SingleElementArray() {
-        // Tests: {50} remains {50}
-        int[] input = {50};
-        int[] expected = {50};
-        TrainApp.bubbleSortByCapacity(input);
-        assertArrayEquals(expected, input);
-    }
-
-    @Test
-    void testSort_AllEqualValues() {
-        // Tests: {40, 40, 40} remains unchanged
-        int[] input = {40, 40, 40};
-        int[] expected = {40, 40, 40};
-        TrainApp.bubbleSortByCapacity(input);
+        // Tests: Single element remains unchanged
+        String[] input = {"Sleeper"};
+        String[] expected = {"Sleeper"};
+        TrainApp.sortBogieNames(input);
         assertArrayEquals(expected, input);
     }
 }
