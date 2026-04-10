@@ -1,59 +1,54 @@
-import java.util.ArrayList;
-import java.util.List;
-
-// UC15 Custom Runtime Exception
-class CargoSafetyException extends RuntimeException {
-    public CargoSafetyException(String message) {
-        super(message);
-    }
-}
+import java.util.Arrays;
 
 public class TrainApp {
 
-    public static class Bogie {
-        private String type;
-        private String cargo = "None";
+    // Existing methods (UC11-UC15) would be above...
 
-        public Bogie(String type) {
+    // --- UC16: Manual Sorting (Bubble Sort) ---
+
+    public static class PassengerBogie {
+        String type;
+        int capacity;
+
+        public PassengerBogie(String type, int capacity) {
             this.type = type;
+            this.capacity = capacity;
         }
+    }
 
-        public void assignCargo(String newCargo) {
-            // Constraint: Petroleum can ONLY be assigned to Cylindrical bogies
-            if (newCargo.equalsIgnoreCase("Petroleum") && !this.type.equalsIgnoreCase("Cylindrical")) {
-                throw new CargoSafetyException("Unsafe cargo assignment!");
+    public static void bubbleSortByCapacity(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    // Manual Swap
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
             }
-            this.cargo = newCargo;
-            System.out.println("Cargo assigned successfully -> " + this.cargo);
         }
-
-        public String getType() { return type; }
-        public String getCargo() { return cargo; }
     }
 
     public static void main(String[] args) {
 
-        Bogie b1 = new Bogie("Cylindrical");
-        Bogie b2 = new Bogie("Rectangular");
+        int[] capacities = {72, 56, 24, 70, 60};
 
-        // Process Bogie 1
-        try {
-            b1.assignCargo("Petroleum");
-        } catch (CargoSafetyException e) {
-            System.out.println("Error: " + e.getMessage());
-        } finally {
-            System.out.println("Cargo validation completed for " + b1.getType() + " bogie\n");
+        System.out.println("Original Capacities:");
+        printArray(capacities);
+
+        bubbleSortByCapacity(capacities);
+
+        System.out.println("\nSorted Capacities (Ascending):");
+        printArray(capacities);
+
+        System.out.println("\nUC16 sorting completed...");
+    }
+
+    private static void printArray(int[] arr) {
+        for (int val : arr) {
+            System.out.print(val + " ");
         }
-
-        // Process Bogie 2 (Will fail)
-        try {
-            b2.assignCargo("Petroleum");
-        } catch (CargoSafetyException e) {
-            System.out.println("Error: " + e.getMessage());
-        } finally {
-            System.out.println("Cargo validation completed for " + b2.getType() + " bogie");
-        }
-
-        System.out.println("\nUC15 runtime handling completed...");
+        System.out.println();
     }
 }
