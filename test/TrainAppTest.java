@@ -1,66 +1,53 @@
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrainAppTest {
 
-    // --- UC9 Grouping Tests ---
+    // --- UC10 Aggregation Tests ---
 
     @Test
-    void testGrouping_BogiesGroupedByType() {
-        // Tests: Bogies with the same name appear under the same Map key.
-        List<TrainApp.Bogie> list = List.of(new TrainApp.Bogie("Sleeper", 72), new TrainApp.Bogie("Sleeper", 70));
-        Map<String, List<TrainApp.Bogie>> result = TrainApp.groupBogiesByType(list);
-
-        assertTrue(result.containsKey("Sleeper"));
-        assertEquals(2, result.get("Sleeper").size());
-    }
-
-    @Test
-    void testGrouping_DifferentBogieTypes() {
-        // Tests: Each bogie type appears as a distinct key.
-        List<TrainApp.Bogie> list = List.of(new TrainApp.Bogie("AC Chair", 56), new TrainApp.Bogie("First Class", 24));
-        Map<String, List<TrainApp.Bogie>> result = TrainApp.groupBogiesByType(list);
-
-        assertEquals(2, result.keySet().size());
-        assertTrue(result.containsKey("AC Chair"));
-        assertTrue(result.containsKey("First Class"));
-    }
-
-    @Test
-    void testGrouping_EmptyBogieList() {
-        // Tests: Grouping an empty list returns an empty Map.
-        Map<String, List<TrainApp.Bogie>> result = TrainApp.groupBogiesByType(new ArrayList<>());
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testGrouping_MapContainsCorrectKeys() {
-        // Tests: Keys match the expected bogie names.
-        List<TrainApp.Bogie> list = List.of(new TrainApp.Bogie("Luxury", 10));
-        Map<String, List<TrainApp.Bogie>> result = TrainApp.groupBogiesByType(list);
-        assertTrue(result.containsKey("Luxury"));
-    }
-
-    @Test
-    void testGrouping_GroupSizeValidation() {
-        // Tests: Validates exact count in a specific group.
-        List<TrainApp.Bogie> list = List.of(
+    void testReduce_TotalSeatCalculation() {
+        // Tests: Total equals sum of all capacities.
+        List<TrainApp.Bogie> bogies = List.of(
                 new TrainApp.Bogie("Sleeper", 72),
-                new TrainApp.Bogie("Sleeper", 70),
-                new TrainApp.Bogie("AC Chair", 60)
+                new TrainApp.Bogie("AC Chair", 56)
         );
-        Map<String, List<TrainApp.Bogie>> result = TrainApp.groupBogiesByType(list);
-        assertEquals(2, result.get("Sleeper").size());
-        assertEquals(1, result.get("AC Chair").size());
+        assertEquals(128, TrainApp.calculateTotalSeats(bogies));
     }
 
     @Test
-    void testGrouping_OriginalListUnchanged() {
-        // Tests: The source list remains unchanged after grouping.
-        List<TrainApp.Bogie> list = new ArrayList<>(List.of(new TrainApp.Bogie("Sleeper", 72)));
-        TrainApp.groupBogiesByType(list);
-        assertEquals(1, list.size());
-        assertEquals("Sleeper", list.get(0).getName());
+    void testReduce_SingleBogieCapacity() {
+        // Tests: Total equals the capacity of the single bogie.
+        List<TrainApp.Bogie> bogies = List.of(new TrainApp.Bogie("First Class", 24));
+        assertEquals(24, TrainApp.calculateTotalSeats(bogies));
+    }
+
+    @Test
+    void testReduce_EmptyBogieList() {
+        // Tests: Empty list returns 0 (the identity value).
+        assertEquals(0, TrainApp.calculateTotalSeats(new ArrayList<>()));
+    }
+
+    @Test
+    void testReduce_MultipleBogiesAggregation() {
+        // Tests: Verifies 4+ bogies contributing to sum.
+        List<TrainApp.Bogie> bogies = List.of(
+                new TrainApp.Bogie("Sleeper", 72),
+                new TrainApp.Bogie("AC Chair", 56),
+                new TrainApp.Bogie("First Class", 24),
+                new TrainApp.Bogie("Sleeper", 70)
+        );
+        assertEquals(222, TrainApp.calculateTotalSeats(bogies));
+    }
+
+    @Test
+    void testReduce_OriginalListUnchanged() {
+        // Tests: The source list remains unchanged after stream processing.
+        List<TrainApp.Bogie> bogies = new ArrayList<>(List.of(new TrainApp.Bogie("Sleeper", 72)));
+        TrainApp.calculateTotalSeats(bogies);
+        assertEquals(1, bogies.size());
+        assertEquals(72, bogies.get(0).getCapacity());
     }
 }

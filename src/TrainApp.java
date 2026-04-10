@@ -1,9 +1,9 @@
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrainApp {
 
-    // --- UC9: Stream Grouping Logic ---
+    // --- UC10: Stream Aggregation (Map-Reduce) Logic ---
 
     public static class Bogie {
         private String name;
@@ -24,13 +24,14 @@ public class TrainApp {
     }
 
     /**
-     * Groups bogies by their name/type using Stream API.
-     * @param bogies The original list.
-     * @return A map categorized by bogie name.
+     * Calculates total seating capacity using map and reduce.
+     * @param bogies The list of bogies to aggregate.
+     * @return The total sum of capacities.
      */
-    public static Map<String, List<Bogie>> groupBogiesByType(List<Bogie> bogies) {
+    public static int calculateTotalSeats(List<Bogie> bogies) {
         return bogies.stream()
-                .collect(Collectors.groupingBy(Bogie::getName));
+                .map(Bogie::getCapacity) // Extract capacity (Integer)
+                .reduce(0, Integer::sum); // Aggregate using sum starting at 0
     }
 
     public static void main(String[] args) {
@@ -41,23 +42,14 @@ public class TrainApp {
         bogieList.add(new Bogie("AC Chair", 56));
         bogieList.add(new Bogie("First Class", 24));
         bogieList.add(new Bogie("Sleeper", 70));
-        bogieList.add(new Bogie("AC Chair", 60));
 
-        System.out.println("All Bogies:");
+        System.out.println("Bogies in Train:");
         bogieList.forEach(System.out::println);
 
-        // Perform grouping
-        Map<String, List<Bogie>> grouped = groupBogiesByType(bogieList);
+        // Perform aggregation
+        int totalSeats = calculateTotalSeats(bogieList);
 
-        System.out.println("\nGrouped Bogies:\n");
-        grouped.forEach((type, list) -> {
-            System.out.println("Bogie Type: " + type);
-            for (Bogie b : list) {
-                System.out.println("  Capacity -> " + b.getCapacity());
-            }
-            System.out.println();
-        });
-
-        System.out.println("UC9 grouping completed...");
+        System.out.println("\nTotal Seating Capacity of Train: " + totalSeats);
+        System.out.println("\nUC10 aggregation completed...");
     }
 }
