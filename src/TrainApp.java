@@ -1,27 +1,42 @@
-import java.util.Arrays;
-
 public class TrainApp {
 
-    // --- UC17: Built-in Sorting using Arrays.sort() ---
+    // --- UC18: Linear Search Logic ---
 
-    public static void sortBogieNames(String[] names) {
-        // Built-in alphabetical sorting
-        Arrays.sort(names);
+    /**
+     * Performs a linear search for a Bogie ID.
+     * @param bogieIds The array of IDs to search through.
+     * @param targetId The ID to find.
+     * @return true if found, otherwise false.
+     */
+    public static boolean findBogieId(String[] bogieIds, String targetId) {
+        for (String id : bogieIds) {
+            // Linear search: check every element sequentially
+            if (id.equals(targetId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
 
-        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
 
-        System.out.println("Original Bogie Names:");
-        System.out.println(Arrays.toString(bogieNames));
+        String[] availableIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String target = "BG309";
 
-        // Perform Built-in Sort
-        sortBogieNames(bogieNames);
+        System.out.println("Available Bogie IDs:");
+        for (String id : availableIds) {
+            System.out.println(id);
+        }
 
-        System.out.println("\nSorted Bogie Names (Alphabetical):");
-        System.out.println(Arrays.toString(bogieNames));
+        boolean found = findBogieId(availableIds, target);
 
-        System.out.println("\nUC17 sorting completed...");
+        if (found) {
+            System.out.println("\nBogie " + target + " found in train consist.");
+        } else {
+            System.out.println("\nBogie " + target + " not found.");
+        }
+
+        System.out.println("\nUC18 search completed...");
     }
 }
