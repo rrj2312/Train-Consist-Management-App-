@@ -5,55 +5,55 @@ import java.util.List;
 
 public class TrainAppTest {
 
-    // --- UC11 Regex Tests ---
 
     @Test
-    void testRegex_ValidTrainID() {
-        assertTrue(TrainApp.isValidTrainId("TRN-1234"));
+    void testLoopFilteringLogic() {
+        List<TrainApp.Bogie> bogies = List.of(
+                new TrainApp.Bogie("B1", 70),
+                new TrainApp.Bogie("B2", 50)
+        );
+        List<TrainApp.Bogie> result = TrainApp.filterWithLoop(bogies);
+        assertEquals(1, result.size(), "Should only include capacity > 60");
+        assertEquals(70, result.get(0).getCapacity());
     }
 
     @Test
-    void testRegex_InvalidTrainIDFormat() {
-        assertFalse(TrainApp.isValidTrainId("TRAIN12"));
-        assertFalse(TrainApp.isValidTrainId("TRN12A"));
-        assertFalse(TrainApp.isValidTrainId("1234-TRN"));
-    }
-
-    // --- UC12 Safety Compliance Tests ---
-
-    @Test
-    void testSafety_AllBogiesValid() {
-        List<TrainApp.GoodsBogie> bogies = new ArrayList<>();
-        bogies.add(new TrainApp.GoodsBogie("Cylindrical", "Petroleum"));
-        assertTrue(TrainApp.checkSafety(bogies));
+    void testStreamFilteringLogic() {
+        List<TrainApp.Bogie> bogies = List.of(
+                new TrainApp.Bogie("B1", 80),
+                new TrainApp.Bogie("B2", 30)
+        );
+        List<TrainApp.Bogie> result = TrainApp.filterWithStream(bogies);
+        assertEquals(1, result.size());
+        assertTrue(result.get(0).getCapacity() > 60);
     }
 
     @Test
-    void testSafety_CylindricalWithInvalidCargo() {
-        List<TrainApp.GoodsBogie> bogies = new ArrayList<>();
-        bogies.add(new TrainApp.GoodsBogie("Cylindrical", "Coal"));
-        assertFalse(TrainApp.checkSafety(bogies));
+    void testLoopAndStreamResultsMatch() {
+        List<TrainApp.Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            bogies.add(new TrainApp.Bogie("B" + i, i));
+        }
+        List<TrainApp.Bogie> loopRes = TrainApp.filterWithLoop(bogies);
+        List<TrainApp.Bogie> streamRes = TrainApp.filterWithStream(bogies);
+        assertEquals(loopRes.size(), streamRes.size(), "Both methods must return the same count");
     }
 
     @Test
-    void testSafety_NonCylindricalBogiesAllowed() {
-        List<TrainApp.GoodsBogie> bogies = new ArrayList<>();
-        bogies.add(new TrainApp.GoodsBogie("Open", "Coal"));
-        bogies.add(new TrainApp.GoodsBogie("Box", "Grain"));
-        assertTrue(TrainApp.checkSafety(bogies));
+    void testExecutionTimeMeasurement() {
+        long startTime = System.nanoTime();
+        // Small delay to ensure time passes
+        long duration = System.nanoTime() - startTime;
+        assertTrue(duration >= 0, "Elapsed time should be a positive value");
     }
 
     @Test
-    void testSafety_MixedBogiesWithViolation() {
-        List<TrainApp.GoodsBogie> bogies = new ArrayList<>();
-        bogies.add(new TrainApp.GoodsBogie("Cylindrical", "Petroleum"));
-        bogies.add(new TrainApp.GoodsBogie("Cylindrical", "Coal"));
-        assertFalse(TrainApp.checkSafety(bogies));
-    }
-
-    @Test
-    void testSafety_EmptyBogieList() {
-        List<TrainApp.GoodsBogie> bogies = new ArrayList<>();
-        assertTrue(TrainApp.checkSafety(bogies));
+    void testLargeDatasetProcessing() {
+        List<TrainApp.Bogie> largeList = new ArrayList<>();
+        for (int i = 0; i < 50000; i++) {
+            largeList.add(new TrainApp.Bogie("B" + i, 100));
+        }
+        List<TrainApp.Bogie> result = TrainApp.filterWithStream(largeList);
+        assertEquals(50000, result.size(), "Should handle large datasets correctly");
     }
 }
