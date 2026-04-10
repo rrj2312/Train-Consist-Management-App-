@@ -1,53 +1,9 @@
-<<<<<<< HEAD
-public class TrainApp {
-
-    // --- UC18: Linear Search Logic ---
-
-    /**
-     * Performs a linear search for a Bogie ID.
-     * @param bogieIds The array of IDs to search through.
-     * @param targetId The ID to find.
-     * @return true if found, otherwise false.
-     */
-    public static boolean findBogieId(String[] bogieIds, String targetId) {
-        for (String id : bogieIds) {
-            // Linear search: check every element sequentially
-            if (id.equals(targetId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static void main(String[] args) {
-
-
-        String[] availableIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
-        String target = "BG309";
-
-        System.out.println("Available Bogie IDs:");
-        for (String id : availableIds) {
-            System.out.println(id);
-        }
-
-        boolean found = findBogieId(availableIds, target);
-
-        if (found) {
-            System.out.println("\nBogie " + target + " found in train consist.");
-        } else {
-            System.out.println("\nBogie " + target + " not found.");
-        }
-
-        System.out.println("\nUC18 search completed...");
-    }
-=======
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TrainApp {
 
-    // --- UC8: Stream Filtering Logic ---
+    // --- UC9: Stream Grouping Logic ---
 
     public static class Bogie {
         private String name;
@@ -58,6 +14,7 @@ public class TrainApp {
             this.capacity = capacity;
         }
 
+        public String getName() { return name; }
         public int getCapacity() { return capacity; }
 
         @Override
@@ -67,35 +24,40 @@ public class TrainApp {
     }
 
     /**
-     * Filters bogies based on a capacity threshold.
-     * @param bogies The original list of bogies.
-     * @param threshold The capacity limit (exclusive).
-     * @return A list of bogies exceeding the threshold.
+     * Groups bogies by their name/type using Stream API.
+     * @param bogies The original list.
+     * @return A map categorized by bogie name.
      */
-    public static List<Bogie> filterByCapacity(List<Bogie> bogies, int threshold) {
+    public static Map<String, List<Bogie>> groupBogiesByType(List<Bogie> bogies) {
         return bogies.stream()
-                .filter(b -> b.getCapacity() > threshold)
-                .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(Bogie::getName));
     }
 
     public static void main(String[] args) {
+
 
         List<Bogie> bogieList = new ArrayList<>();
         bogieList.add(new Bogie("Sleeper", 72));
         bogieList.add(new Bogie("AC Chair", 56));
         bogieList.add(new Bogie("First Class", 24));
-        bogieList.add(new Bogie("General", 90));
+        bogieList.add(new Bogie("Sleeper", 70));
+        bogieList.add(new Bogie("AC Chair", 60));
 
         System.out.println("All Bogies:");
         bogieList.forEach(System.out::println);
 
-        // Applying threshold of 60
-        List<Bogie> filtered = filterByCapacity(bogieList, 60);
+        // Perform grouping
+        Map<String, List<Bogie>> grouped = groupBogiesByType(bogieList);
 
-        System.out.println("\nFiltered Bogies (Capacity > 60):");
-        filtered.forEach(System.out::println);
+        System.out.println("\nGrouped Bogies:\n");
+        grouped.forEach((type, list) -> {
+            System.out.println("Bogie Type: " + type);
+            for (Bogie b : list) {
+                System.out.println("  Capacity -> " + b.getCapacity());
+            }
+            System.out.println();
+        });
 
-        System.out.println("\nUC8 filtering completed...");
+        System.out.println("UC9 grouping completed...");
     }
->>>>>>> feature/UC8
 }
