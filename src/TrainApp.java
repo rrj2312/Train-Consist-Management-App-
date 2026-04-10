@@ -3,9 +3,7 @@ import java.util.regex.Pattern;
 
 public class TrainApp {
 
-    /**
-     * Validates Train ID format: TRN-XXXX (where X is a digit)
-     */
+
     public static boolean isValidTrainId(String trainId) {
         String regex = "^TRN-\\d{4}$";
         return Pattern.matches(regex, trainId);
